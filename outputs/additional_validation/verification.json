@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "80/10/10 counts sum to full cleaned cohort",
+    "cross-split duplicate assertions passed during execution",
+    "training-only fitted medians verified",
+    "50 folds per model, 10 repeats of 5 folds",
+    "reported means and population SDs recomputed from saved fold scores",
+    "Cleveland holdout excluded from repeated CV"
+  ]
+}

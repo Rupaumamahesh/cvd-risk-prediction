@@ -1,0 +1,42 @@
+{
+  "raw_records": 70000,
+  "raw_class_counts": {
+    "0": 35021,
+    "1": 34979
+  },
+  "repeated_profile_rows_removed": 82,
+  "repeated_profiles_with_conflicting_labels": 17,
+  "implausible_rows_removed_after_deduplication": 1390,
+  "clean_records": 68528,
+  "clean_class_counts": {
+    "0": 34618,
+    "1": 33910
+  },
+  "random_state": 42,
+  "balancing": "None; natural class distribution retained",
+  "split_strategy": "Random row-wise stratified 70/15/15; subject identifiers unavailable",
+  "cross_split_duplicate_profiles": 0,
+  "splits": {
+    "train": {
+      "n": 47968,
+      "class_counts": {
+        "0": 24232,
+        "1": 23736
+      }
+    },
+    "val": {
+      "n": 10280,
+      "class_counts": {
+        "0": 5193,
+        "1": 5087
+      }
+    },
+    "test": {
+      "n": 10280,
+      "class_counts": {
+        "0": 5193,
+        "1": 5087
+      }
+    }
+  }
+}

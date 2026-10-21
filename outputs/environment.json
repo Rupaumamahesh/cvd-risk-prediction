@@ -1,0 +1,19 @@
+{
+  "os": "macOS-13.7.7-x86_64-i386-64bit-Mach-O",
+  "architecture": "x86_64",
+  "cpu": "Intel(R) Core(TM) i5-7360U CPU @ 2.30GHz",
+  "logical_cpus": "4",
+  "ram_gib": 16.0,
+  "python": "3.13.1 (v3.13.1:06714517797, Dec  3 2024, 14:00:22) [Clang 15.0.0 (clang-1500.3.9.4)]",
+  "packages": {
+    "pandas": "3.0.6",
+    "numpy": "2.3.5",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1",
+    "shap": "0.52.0",
+    "matplotlib": "3.11.2",
+    "joblib": "1.6.0"
+  },
+  "training_device": "CPU",
+  "parallel_grid_jobs": 4
+}

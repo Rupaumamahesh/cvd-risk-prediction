@@ -1,0 +1,35 @@
+{
+  "ratio": "80/10/10",
+  "random_state": 42,
+  "records": 68528,
+  "cross_split_duplicate_profiles": 0,
+  "preprocessing": "Median imputation fitted only on this 80% training subset; LR scaling also fitted only on training",
+  "selection": "Frozen primary-selected algorithm and hyperparameters; no supplementary selection or tuning",
+  "interpretation": "Exploratory sensitivity check; records and tuned settings reused from the main experiment, not independent confirmation",
+  "splits": {
+    "train": {
+      "n": 54822,
+      "fraction": 0.7999941629698809,
+      "class_counts": {
+        "0": 27694,
+        "1": 27128
+      }
+    },
+    "val": {
+      "n": 6853,
+      "fraction": 0.10000291851505953,
+      "class_counts": {
+        "0": 3462,
+        "1": 3391
+      }
+    },
+    "test": {
+      "n": 6853,
+      "fraction": 0.10000291851505953,
+      "class_counts": {
+        "0": 3462,
+        "1": 3391
+      }
+    }
+  }
+}

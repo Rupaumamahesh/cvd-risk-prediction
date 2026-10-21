@@ -1,0 +1,43 @@
+{
+  "ratio": "80/10/10",
+  "random_state": 42,
+  "records": 68528,
+  "cross_split_duplicate_profiles": 0,
+  "preprocessing": "Median imputation fitted only on this 80% training subset; LR scaling also fitted only on training",
+  "selection": "Frozen primary-selected algorithm and hyperparameters; no supplementary selection or tuning",
+  "interpretation": "Exploratory sensitivity check; records and tuned settings reused from the main experiment, not independent confirmation",
+  "splits": {
+    "train": {
+      "n": 54822,
+      "fraction": 0.7999941629698809,
+      "class_counts": {
+        "0": 27694,
+        "1": 27128
+      }
+    },
+    "val": {
+      "n": 6853,
+      "fraction": 0.10000291851505953,
+      "class_counts": {
+        "0": 3462,
+        "1": 3391
+      }
+    },
+    "test": {
+      "n": 6853,
+      "fraction": 0.10000291851505953,
+      "class_counts": {
+        "0": 3462,
+        "1": 3391
+      }
+    }
+  }
+}
+  model split  accuracy  precision   recall       f1  roc_auc
+  Dummy   val  0.505180   0.000000 0.000000 0.000000 0.500000
+  Dummy  test  0.505180   0.000000 0.000000 0.000000 0.500000
+XGBoost   val  0.743324   0.767191 0.690947 0.727075 0.813788
+XGBoost  test  0.728586   0.750737 0.675907 0.711359 0.797614
+  model  roc_auc_mean  roc_auc_std  accuracy_mean  accuracy_std  recall_mean  recall_std  f1_mean   f1_std
+  Dummy      0.500000     0.000000       0.542525      0.006239     0.000000    0.000000 0.000000 0.000000
+XGBoost      0.865535     0.050601       0.789679      0.059804     0.759158    0.093812 0.766605 0.068059

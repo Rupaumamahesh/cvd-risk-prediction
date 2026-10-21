@@ -1,0 +1,6 @@
+{
+  "winner": "XGBoost",
+  "selection": "highest validation ROC-AUC",
+  "threshold": 0.5,
+  "test_used_for_selection": false
+}

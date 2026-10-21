@@ -1,107 +1,44 @@
-"""
-STEP 2 — Train + hyperparameter-tune all 3 models on the PRIMARY dataset,
-then select the best one by VALIDATION ROC-AUC (not accuracy).
-
-Input : data/primary_train.csv, data/primary_val.csv
-Output: models/best_model.joblib, outputs/validation_results.csv
-
-Run:
-    python 02_train_and_tune.py
-"""
-
+"""Training-only grid search; validation selects winner; no test access."""
+import json
+import os
+from pathlib import Path
 import pandas as pd
 import joblib
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
-from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
-)
+from pipeline_common import FEATURES, SEED, make_pipeline, evaluate
 
-TARGET = "cardio"
-FEATURES = [
-    "age", "gender", "height", "weight", "ap_hi", "ap_lo",
-    "cholesterol", "gluc", "smoke", "alco", "active",
-]
-
-# --- Hyperparameter grids (matches the deck's "Training Parameters" slide) ---
 PARAM_GRIDS = {
-    "LogisticRegression": {
-        "model": LogisticRegression(max_iter=2000),
-        "params": {"C": [0.01, 0.1, 1, 10], "penalty": ["l2"]},
-    },
-    "RandomForest": {
-        "model": RandomForestClassifier(random_state=42),
-        "params": {
-            "n_estimators": [100, 200, 300],
-            "max_depth": [5, 10, 15],
-        },
-    },
-    "XGBoost": {
-        "model": XGBClassifier(
-            random_state=42, use_label_encoder=False, eval_metric="logloss"
-        ),
-        "params": {
-            "learning_rate": [0.01, 0.05, 0.1],
-            "n_estimators": [100, 200, 300],
-            "max_depth": [3, 5, 7],
-        },
-    },
+ 'Dummy': {},
+ 'LogisticRegression': {'model__C':[.01,.1,1,10]},
+ 'RandomForest': {'model__n_estimators':[100,200,300], 'model__max_depth':[5,10,15]},
+ 'XGBoost': {'model__learning_rate':[.01,.05,.1], 'model__n_estimators':[100,200,300], 'model__max_depth':[3,5,7]},
 }
 
-def evaluate(model, X, y) -> dict:
-    preds = model.predict(X)
-    proba = model.predict_proba(X)[:, 1]
-    return {
-        "accuracy": accuracy_score(y, preds),
-        "precision": precision_score(y, preds),
-        "recall": recall_score(y, preds),
-        "f1": f1_score(y, preds),
-        "roc_auc": roc_auc_score(y, proba),
-    }
-
 def main():
-    train = pd.read_csv("data/primary_train.csv")
-    val = pd.read_csv("data/primary_val.csv")
+    Path('models').mkdir(exist_ok=True)
+    train,val = [pd.read_csv(f'data/primary_{s}.csv') for s in ['train','val']]
+    cv=StratifiedKFold(n_splits=5,shuffle=True,random_state=SEED)
+    results=[]
+    for name, grid in PARAM_GRIDS.items():
+        print('Tuning',name,flush=True)
+        search=GridSearchCV(make_pipeline(name),grid,scoring={'roc_auc':'roc_auc','accuracy':'accuracy','f1':'f1'},refit='roc_auc',cv=cv,n_jobs=int(os.environ.get('CVD_JOBS','4')),error_score='raise')
+        search.fit(train[FEATURES],train.cardio)
+        pd.DataFrame(search.cv_results_).to_csv(f'outputs/cv_{name}.csv',index=False)
+        row={'model':name,**evaluate(search.best_estimator_,val[FEATURES],val.cardio),'best_params':json.dumps(search.best_params_)}
+        i=search.best_index_
+        for metric in ['roc_auc','accuracy','f1']:
+            row[f'cv_{metric}_mean']=search.cv_results_[f'mean_test_{metric}'][i]
+            row[f'cv_{metric}_std']=search.cv_results_[f'std_test_{metric}'][i]
+        results.append(row)
+        joblib.dump(search.best_estimator_,f'models/{name}.joblib')
+        print(row,flush=True)
+    out=pd.DataFrame(results).sort_values('roc_auc',ascending=False)
+    out['roc_auc_improvement_over_dummy']=out.roc_auc-out.loc[out.model.eq('Dummy'),'roc_auc'].iloc[0]
+    out.to_csv('outputs/validation_results.csv',index=False)
+    winner=out.iloc[0].model
+    joblib.dump(joblib.load(f'models/{winner}.joblib'),'models/best_model.joblib')
+    joblib.dump(FEATURES,'models/feature_list.joblib')
+    Path('outputs/selection.json').write_text(json.dumps({'winner':winner,'selection':'highest validation ROC-AUC','threshold':.5,'test_used_for_selection':False},indent=2))
+    print(out.to_string(index=False),flush=True)
 
-    X_train, y_train = train[FEATURES], train[TARGET]
-    X_val, y_val = val[FEATURES], val[TARGET]
-
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-
-    results = []
-    fitted_models = {}
-
-    for name, cfg in PARAM_GRIDS.items():
-        print(f"\nTuning {name} ...")
-        search = GridSearchCV(
-            cfg["model"], cfg["params"], scoring="roc_auc", cv=cv, n_jobs=-1
-        )
-        search.fit(X_train, y_train)
-        best = search.best_estimator_
-        fitted_models[name] = best
-
-        metrics = evaluate(best, X_val, y_val)
-        metrics["model"] = name
-        metrics["best_params"] = search.best_params_
-        results.append(metrics)
-        print(f"  Best params: {search.best_params_}")
-        print(f"  Validation ROC-AUC: {metrics['roc_auc']:.4f}")
-
-    results_df = pd.DataFrame(results).sort_values("roc_auc", ascending=False)
-    results_df.to_csv("outputs/validation_results.csv", index=False)
-    print("\n=== Validation comparison (sorted by ROC-AUC) ===")
-    print(results_df[["model", "accuracy", "precision", "recall", "f1", "roc_auc"]])
-
-    # --- Selection rule: highest validation ROC-AUC wins ---
-    winner_name = results_df.iloc[0]["model"]
-    winner_model = fitted_models[winner_name]
-    print(f"\nSelected model: {winner_name}")
-
-    joblib.dump(winner_model, "models/best_model.joblib")
-    joblib.dump(FEATURES, "models/feature_list.joblib")
-    print("Saved: models/best_model.joblib")
-
-if __name__ == "__main__":
-    main()
+if __name__=='__main__': main()

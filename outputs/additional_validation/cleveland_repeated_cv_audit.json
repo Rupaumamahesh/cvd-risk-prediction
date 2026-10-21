@@ -1,0 +1,13 @@
+{
+  "strategy": "RepeatedStratifiedKFold",
+  "n_splits": 5,
+  "n_repeats": 10,
+  "fits_per_model": 50,
+  "random_state": 42,
+  "training_records": 212,
+  "untouched_holdout_records": 91,
+  "holdout_evaluated_by_this_script": false,
+  "hyperparameters": "Frozen from primary selection; no Cleveland tuning",
+  "preprocessing": "Median imputation fitted separately within each fold; verified against fold training medians",
+  "sd": "Population SD across 50 dependent fold scores, not a standard error or confidence interval"
+}

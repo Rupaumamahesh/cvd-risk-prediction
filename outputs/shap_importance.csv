@@ -1,0 +1,15 @@
+feature,mean_absolute_shap
+ap_hi,0.6678511
+age,0.27572203
+map,0.22959737
+cholesterol,0.18999635
+active,0.05352298
+bmi,0.05208498
+weight,0.05076042
+gluc,0.02355676
+smoke,0.02320487
+alco,0.020142639
+pulse_pressure,0.013506055
+ap_lo,0.010864221
+height,0.010675753
+gender,0.008652168
