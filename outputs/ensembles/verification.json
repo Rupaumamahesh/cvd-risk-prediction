@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "protected_file_sha256": {
+    "models/best_model.joblib": "ef8f14bc63b2cda694dcd018f1f0b02397bea58b2b589327e19f78a42e8a9e31",
+    "outputs/test_results.csv": "a7f4709499e0d0df835b53badc03652e7979addfb00c5d62c06bde6388c6e5f7",
+    "outputs/test_predictions.csv": "98fbeeb376caf390acc558d8d8b508eada152d63708643800ff6a0d024d85259",
+    "outputs/validation_results.csv": "ac9a170b9762b97086f78aede105dd8bf2749e77c1bcc906ead6d7a0e5adc73f",
+    "outputs/selection.json": "020bf046a676228c8c34ae905d756b4d70e11eacc55e17df0945efd212834496",
+    "outputs/additional_methods/all_methods_validation.csv": "a1362d6f51f67934e1d82110f8cac537cd2c7389d91562abda6a577c70a468c8",
+    "models/RandomForest.joblib": "e6170c2fc89ea76fcd8d85ed81a02e02290d5531e61658b18582524225412bdf",
+    "models/feature_list.joblib": "4887c86d12c9cfabe3649bdf8da83a3d8203f0e472cd9ae87bec6979d6b55750",
+    "models/LogisticRegression.joblib": "5951525aef95f44880cd267066c83076fd9aff992a3fb216db18615c6f6842b0",
+    "models/Dummy.joblib": "452048bcafa5fc50786d4ac9a790ac6c9b79a737e44f4754e57a1fa169c3ec13",
+    "models/XGBoost.joblib": "ef8f14bc63b2cda694dcd018f1f0b02397bea58b2b589327e19f78a42e8a9e31",
+    "models/additional_methods/KNN.joblib": "d2ce666334094aa1b5d783fb895efc7ee2399b02757dc201ae4027413eab6d75",
+    "models/additional_methods/GaussianNB.joblib": "41cae7a4d623e35e350697cf25b0980d8c93ce9eb98e8986d2647373401da437",
+    "models/additional_methods/extended_winner.joblib": "ef8f14bc63b2cda694dcd018f1f0b02397bea58b2b589327e19f78a42e8a9e31",
+    "models/additional_methods/LinearSVM.joblib": "d762185dff3505bb5b642c80b8e6015ae8bdc7b5756e1e306cc9e23cf3eed114"
+  },
+  "checks": [
+    "Outer-fold profile disjointness",
+    "Each inner OOF record predicted exactly once without fitting on it",
+    "Every inner/full-training base imputer and scaler verified against its actual fitting records",
+    "Combiner fitted exclusively on training OOF probabilities",
+    "Original validation XGBoost probabilities reproduced",
+    "Selection frozen before test access",
+    "Original artifacts unchanged"
+  ]
+}

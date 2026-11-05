@@ -11,40 +11,55 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from plot_labels import label_bars, label_cv, draw_roc
 
-def main():
+def make_plots():
     val=pd.read_csv('outputs/validation_results.csv')
     test=pd.read_csv('outputs/test_results.csv').iloc[0]
     ext=pd.read_csv('outputs/generalization_results.csv')
     audit=json.loads(Path('outputs/preprocessing_audit.json').read_text())
     fig,ax=plt.subplots(figsize=(9,5))
-    ax.bar(val.model,val.roc_auc,label='Validation ROC-AUC',alpha=.75)
+    bars=ax.bar(val.model,val.roc_auc,label='Validation ROC-AUC',alpha=.75)
+    label_bars(ax,bars,padding=12)
+    label_cv(ax,val.cv_roc_auc_mean,val.cv_roc_auc_std)
     ax.errorbar(val.model,val.cv_roc_auc_mean,yerr=val.cv_roc_auc_std,fmt='ko',capsize=5,label='Training CV mean ± SD')
-    ax.set(ylim=(.4,.9),ylabel='ROC-AUC',title='Model comparison: validation selection and training CV')
+    ax.set(ylim=(0,1),ylabel='ROC-AUC',title='Model comparison: validation selection and training CV')
     ax.legend(); fig.tight_layout(); fig.savefig('outputs/model_comparison.png',dpi=180); plt.close(fig)
     external=ext.loc[ext.model.ne('Dummy')]
     fig,axes=plt.subplots(1,2,figsize=(11,5))
     labels=['Primary',*external.dataset]
-    axes[0].bar(labels,[test.roc_auc,*external.roc_auc]); axes[0].axhline(.5,color='black',linestyle='--'); axes[0].set(ylabel='Held-out ROC-AUC',ylim=(0,1))
-    axes[1].bar(labels,[test.recall,*external.recall]); axes[1].set(ylabel='Recall at threshold 0.5',ylim=(0,1))
+    bars=axes[0].bar(labels,[test.roc_auc,*external.roc_auc]); label_bars(axes[0],bars); axes[0].axhline(.5,color='black',linestyle='--'); axes[0].set(ylabel='Held-out ROC-AUC',ylim=(0,1))
+    bars=axes[1].bar(labels,[test.recall,*external.recall]); label_bars(axes[1],bars); axes[1].set(ylabel='Recall at threshold 0.5',ylim=(0,1))
     fig.suptitle('Separate dataset results: external models retrained; endpoints differ')
     fig.tight_layout(); fig.savefig('outputs/cross_dataset_comparison.png',dpi=180); plt.close(fig)
     validation=pd.read_csv('data/primary_val.csv')
     fig,ax=plt.subplots(figsize=(8,6))
     for name in val.model:
         model=joblib.load(f'models/{name}.joblib')
-        RocCurveDisplay.from_estimator(model,validation[FEATURES],validation.cardio,ax=ax,name=name)
+        draw_roc(ax,validation.cardio,model.predict_proba(validation[FEATURES])[:,1],name)
     ax.plot([0,1],[0,1],'k--'); ax.set_title('Validation ROC curves: model selection only')
     fig.tight_layout(); fig.savefig('outputs/validation_roc_curves.png',dpi=180); plt.close(fig)
     fig,ax=plt.subplots(figsize=(8,6))
     for dataset in ['Cleveland','Framingham']:
         pred=pd.read_csv(f'outputs/{dataset.lower()}_predictions.csv')
-        RocCurveDisplay.from_predictions(pred.actual,pred.probability,ax=ax,name=dataset)
+        draw_roc(ax,pred.actual,pred.probability,dataset)
     ax.plot([0,1],[0,1],'k--'); ax.set_title('External holdouts: separately retrained models; different endpoints')
     fig.tight_layout(); fig.savefig('outputs/external_roc_curves.png',dpi=180); plt.close(fig)
     counts=pd.DataFrame({s:d['class_counts'] for s,d in audit['splits'].items()}).T
     counts.columns=['Class '+str(c) for c in counts.columns]
-    ax=counts.plot.bar(stacked=True,figsize=(7,5)); ax.set(ylabel='Records',title='Natural class distribution; no resampling'); plt.xticks(rotation=0); plt.tight_layout(); plt.savefig('outputs/class_distribution.png',dpi=180); plt.close()
+    ax=counts.plot.bar(stacked=True,figsize=(8,6))
+    for container in ax.containers:
+        ax.bar_label(container,labels=[f'{int(v):,}' for v in container.datavalues],label_type='center',fontsize=11)
+    for i,total in enumerate(counts.sum(axis=1)):
+        ax.annotate(f'Total {int(total):,}',(i,total),xytext=(0,5),textcoords='offset points',ha='center')
+    ax.set(ylabel='Records',title='Natural class distribution; no resampling',ylim=(0,counts.sum(axis=1).max()*1.12))
+    plt.xticks(rotation=0);plt.tight_layout();plt.savefig('outputs/class_distribution.png',dpi=180);plt.close()
+
+def main():
+    make_plots()
+    val=pd.read_csv('outputs/validation_results.csv')
+    test=pd.read_csv('outputs/test_results.csv').iloc[0]
+    audit=json.loads(Path('outputs/preprocessing_audit.json').read_text())
     def hardware(key):
         try:
             return subprocess.check_output(['/usr/sbin/sysctl','-n',key],text=True,stderr=subprocess.DEVNULL).strip()

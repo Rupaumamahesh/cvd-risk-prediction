@@ -1,0 +1,2 @@
+model,accuracy,precision,recall,f1,roc_auc,average_precision,log_loss,brier_score,specificity,npv,tn,fp,fn,tp,score_type,source
+XGBoost,0.7342412451361867,0.7581670686253015,0.6797719677609593,0.716832504145937,0.8028122719371933,0.783868382218557,0.5394840611843469,0.1799777550619029,0.7875986905449643,0.7151599930057703,4090,1103,1629,3458,probability,Reused original winner test predictions; no new test inference

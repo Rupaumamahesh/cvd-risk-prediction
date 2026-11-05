@@ -1,0 +1,8 @@
+{
+  "winner": "XGBoost",
+  "selected_combiner_C": 1.0,
+  "rule": "highest validation ROC-AUC among XGBoost, SoftVoting and Stacking",
+  "test_used_for_selection": false,
+  "classification_threshold": 0.5,
+  "data_reuse_limitations": "Previously inspected source test data and repeatedly reused validation; not independent confirmation"
+}

@@ -1,0 +1,247 @@
+{
+  "members": {
+    "XGBoost": {
+      "memory": null,
+      "steps": [
+        [
+          "imputer",
+          "SimpleImputer(strategy='median')"
+        ],
+        [
+          "scale",
+          "passthrough"
+        ],
+        [
+          "model",
+          "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=True, eval_metric='logloss',\n              feature_types=None, feature_weights=None, gamma=None,\n              grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=0.1, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=3, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=100, n_jobs=1,\n              num_parallel_tree=None, ...)"
+        ]
+      ],
+      "transform_input": null,
+      "verbose": false,
+      "imputer": "SimpleImputer(strategy='median')",
+      "scale": "passthrough",
+      "model": "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=True, eval_metric='logloss',\n              feature_types=None, feature_weights=None, gamma=None,\n              grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=0.1, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=3, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=100, n_jobs=1,\n              num_parallel_tree=None, ...)",
+      "imputer__add_indicator": false,
+      "imputer__copy": true,
+      "imputer__fill_value": null,
+      "imputer__keep_empty_features": false,
+      "imputer__missing_values": NaN,
+      "imputer__strategy": "median",
+      "model__objective": "binary:logistic",
+      "model__base_score": null,
+      "model__booster": null,
+      "model__callbacks": null,
+      "model__colsample_bylevel": null,
+      "model__colsample_bynode": null,
+      "model__colsample_bytree": null,
+      "model__device": null,
+      "model__early_stopping_rounds": null,
+      "model__enable_categorical": true,
+      "model__eval_metric": "logloss",
+      "model__feature_types": null,
+      "model__feature_weights": null,
+      "model__gamma": null,
+      "model__grow_policy": null,
+      "model__importance_type": null,
+      "model__interaction_constraints": null,
+      "model__learning_rate": 0.1,
+      "model__max_bin": null,
+      "model__max_cat_threshold": null,
+      "model__max_cat_to_onehot": null,
+      "model__max_delta_step": null,
+      "model__max_depth": 3,
+      "model__max_leaves": null,
+      "model__min_child_weight": null,
+      "model__missing": NaN,
+      "model__monotone_constraints": null,
+      "model__multi_strategy": null,
+      "model__n_estimators": 100,
+      "model__n_jobs": 1,
+      "model__num_parallel_tree": null,
+      "model__random_state": 42,
+      "model__reg_alpha": null,
+      "model__reg_lambda": null,
+      "model__sampling_method": null,
+      "model__scale_pos_weight": null,
+      "model__subsample": null,
+      "model__tree_method": "hist",
+      "model__validate_parameters": null,
+      "model__verbosity": null
+    },
+    "RandomForest": {
+      "memory": null,
+      "steps": [
+        [
+          "imputer",
+          "SimpleImputer(strategy='median')"
+        ],
+        [
+          "scale",
+          "passthrough"
+        ],
+        [
+          "model",
+          "RandomForestClassifier(max_depth=10, n_estimators=300, n_jobs=1,\n                       random_state=42)"
+        ]
+      ],
+      "transform_input": null,
+      "verbose": false,
+      "imputer": "SimpleImputer(strategy='median')",
+      "scale": "passthrough",
+      "model": "RandomForestClassifier(max_depth=10, n_estimators=300, n_jobs=1,\n                       random_state=42)",
+      "imputer__add_indicator": false,
+      "imputer__copy": true,
+      "imputer__fill_value": null,
+      "imputer__keep_empty_features": false,
+      "imputer__missing_values": NaN,
+      "imputer__strategy": "median",
+      "model__bootstrap": true,
+      "model__ccp_alpha": 0.0,
+      "model__class_weight": null,
+      "model__criterion": "gini",
+      "model__max_depth": 10,
+      "model__max_features": "sqrt",
+      "model__max_leaf_nodes": null,
+      "model__max_samples": null,
+      "model__min_impurity_decrease": 0.0,
+      "model__min_samples_leaf": 1,
+      "model__min_samples_split": 2,
+      "model__min_weight_fraction_leaf": 0.0,
+      "model__monotonic_cst": null,
+      "model__n_estimators": 300,
+      "model__n_jobs": 1,
+      "model__oob_score": false,
+      "model__random_state": 42,
+      "model__verbose": 0,
+      "model__warm_start": false
+    },
+    "KNN": {
+      "memory": null,
+      "steps": [
+        [
+          "preprocess",
+          "ColumnTransformer(transformers=[('numeric',\n                                 Pipeline(steps=[('imputer',\n                                                  SimpleImputer(strategy='median')),\n                                                 ('scale', StandardScaler())]),\n                                 ['age', 'height', 'weight', 'ap_hi', 'ap_lo',\n                                  'bmi', 'pulse_pressure', 'map']),\n                                ('categorical',\n                                 Pipeline(steps=[('imputer',\n                                                  SimpleImputer(strategy='most_frequent')),\n                                                 ('encode',\n                                                  OneHotEncoder(handle_unknown='ignore',\n                                                                sparse_output=False))]),\n                                 ['gender', 'cholesterol', 'gluc', 'smoke',\n                                  'alco', 'active'])])"
+        ],
+        [
+          "model",
+          "KNeighborsClassifier(algorithm='brute', n_jobs=1, n_neighbors=101)"
+        ]
+      ],
+      "transform_input": null,
+      "verbose": false,
+      "preprocess": "ColumnTransformer(transformers=[('numeric',\n                                 Pipeline(steps=[('imputer',\n                                                  SimpleImputer(strategy='median')),\n                                                 ('scale', StandardScaler())]),\n                                 ['age', 'height', 'weight', 'ap_hi', 'ap_lo',\n                                  'bmi', 'pulse_pressure', 'map']),\n                                ('categorical',\n                                 Pipeline(steps=[('imputer',\n                                                  SimpleImputer(strategy='most_frequent')),\n                                                 ('encode',\n                                                  OneHotEncoder(handle_unknown='ignore',\n                                                                sparse_output=False))]),\n                                 ['gender', 'cholesterol', 'gluc', 'smoke',\n                                  'alco', 'active'])])",
+      "model": "KNeighborsClassifier(algorithm='brute', n_jobs=1, n_neighbors=101)",
+      "preprocess__n_jobs": null,
+      "preprocess__remainder": "drop",
+      "preprocess__sparse_threshold": 0.3,
+      "preprocess__transformer_weights": null,
+      "preprocess__transformers": [
+        [
+          "numeric",
+          "Pipeline(steps=[('imputer', SimpleImputer(strategy='median')),\n                ('scale', StandardScaler())])",
+          [
+            "age",
+            "height",
+            "weight",
+            "ap_hi",
+            "ap_lo",
+            "bmi",
+            "pulse_pressure",
+            "map"
+          ]
+        ],
+        [
+          "categorical",
+          "Pipeline(steps=[('imputer', SimpleImputer(strategy='most_frequent')),\n                ('encode',\n                 OneHotEncoder(handle_unknown='ignore', sparse_output=False))])",
+          [
+            "gender",
+            "cholesterol",
+            "gluc",
+            "smoke",
+            "alco",
+            "active"
+          ]
+        ]
+      ],
+      "preprocess__verbose": false,
+      "preprocess__verbose_feature_names_out": true,
+      "preprocess__numeric": "Pipeline(steps=[('imputer', SimpleImputer(strategy='median')),\n                ('scale', StandardScaler())])",
+      "preprocess__categorical": "Pipeline(steps=[('imputer', SimpleImputer(strategy='most_frequent')),\n                ('encode',\n                 OneHotEncoder(handle_unknown='ignore', sparse_output=False))])",
+      "preprocess__numeric__memory": null,
+      "preprocess__numeric__steps": [
+        [
+          "imputer",
+          "SimpleImputer(strategy='median')"
+        ],
+        [
+          "scale",
+          "StandardScaler()"
+        ]
+      ],
+      "preprocess__numeric__transform_input": null,
+      "preprocess__numeric__verbose": false,
+      "preprocess__numeric__imputer": "SimpleImputer(strategy='median')",
+      "preprocess__numeric__scale": "StandardScaler()",
+      "preprocess__numeric__imputer__add_indicator": false,
+      "preprocess__numeric__imputer__copy": true,
+      "preprocess__numeric__imputer__fill_value": null,
+      "preprocess__numeric__imputer__keep_empty_features": false,
+      "preprocess__numeric__imputer__missing_values": NaN,
+      "preprocess__numeric__imputer__strategy": "median",
+      "preprocess__numeric__scale__copy": true,
+      "preprocess__numeric__scale__with_mean": true,
+      "preprocess__numeric__scale__with_std": true,
+      "preprocess__categorical__memory": null,
+      "preprocess__categorical__steps": [
+        [
+          "imputer",
+          "SimpleImputer(strategy='most_frequent')"
+        ],
+        [
+          "encode",
+          "OneHotEncoder(handle_unknown='ignore', sparse_output=False)"
+        ]
+      ],
+      "preprocess__categorical__transform_input": null,
+      "preprocess__categorical__verbose": false,
+      "preprocess__categorical__imputer": "SimpleImputer(strategy='most_frequent')",
+      "preprocess__categorical__encode": "OneHotEncoder(handle_unknown='ignore', sparse_output=False)",
+      "preprocess__categorical__imputer__add_indicator": false,
+      "preprocess__categorical__imputer__copy": true,
+      "preprocess__categorical__imputer__fill_value": null,
+      "preprocess__categorical__imputer__keep_empty_features": false,
+      "preprocess__categorical__imputer__missing_values": NaN,
+      "preprocess__categorical__imputer__strategy": "most_frequent",
+      "preprocess__categorical__encode__categories": "auto",
+      "preprocess__categorical__encode__drop": null,
+      "preprocess__categorical__encode__dtype": "<class 'numpy.float64'>",
+      "preprocess__categorical__encode__feature_name_combiner": "concat",
+      "preprocess__categorical__encode__handle_unknown": "ignore",
+      "preprocess__categorical__encode__max_categories": null,
+      "preprocess__categorical__encode__min_frequency": null,
+      "preprocess__categorical__encode__sparse_output": false,
+      "model__algorithm": "brute",
+      "model__leaf_size": 30,
+      "model__metric": "minkowski",
+      "model__metric_params": null,
+      "model__n_jobs": 1,
+      "model__n_neighbors": 101,
+      "model__p": 2,
+      "model__weights": "uniform"
+    }
+  },
+  "combiner_C_grid": [
+    0.01,
+    0.1,
+    1.0
+  ],
+  "outer_folds": 5,
+  "inner_oof_folds": 5,
+  "seed": 42,
+  "base_hyperparameters": "Frozen from previous training searches; not retuned inside outer folds",
+  "interpretation": "Exploratory tuning estimates: outer folds select combiner C; historical base tuning used this same training partition",
+  "preprocessing": "Each base learner retains its own pipeline; fitted inside every inner/outer training subset",
+  "meta_features": "Three class-1 probabilities only; no original input passthrough",
+  "calibration": "Diagnostic curves and probability scores; no post-hoc calibration or threshold tuning",
+  "threshold": 0.5
+}

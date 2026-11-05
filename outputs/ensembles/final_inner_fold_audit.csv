@@ -1,0 +1,16 @@
+member,inner_fold,n_fit,n_oof,disjoint,preprocessing_statistics_verified
+XGBoost,1,38374,9594,True,True
+XGBoost,2,38374,9594,True,True
+XGBoost,3,38374,9594,True,True
+XGBoost,4,38375,9593,True,True
+XGBoost,5,38375,9593,True,True
+RandomForest,1,38374,9594,True,True
+RandomForest,2,38374,9594,True,True
+RandomForest,3,38374,9594,True,True
+RandomForest,4,38375,9593,True,True
+RandomForest,5,38375,9593,True,True
+KNN,1,38374,9594,True,True
+KNN,2,38374,9594,True,True
+KNN,3,38374,9594,True,True
+KNN,4,38375,9593,True,True
+KNN,5,38375,9593,True,True

@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "protected_file_sha256": {
+    "models/best_model.joblib": "ef8f14bc63b2cda694dcd018f1f0b02397bea58b2b589327e19f78a42e8a9e31",
+    "outputs/validation_results.csv": "ac9a170b9762b97086f78aede105dd8bf2749e77c1bcc906ead6d7a0e5adc73f",
+    "outputs/test_results.csv": "a7f4709499e0d0df835b53badc03652e7979addfb00c5d62c06bde6388c6e5f7",
+    "outputs/test_predictions.csv": "98fbeeb376caf390acc558d8d8b508eada152d63708643800ff6a0d024d85259",
+    "outputs/selection.json": "020bf046a676228c8c34ae905d756b4d70e11eacc55e17df0945efd212834496"
+  },
+  "checks": [
+    "Training/validation exact profile isolation",
+    "Training-only medians and scaler means for new fitted pipelines",
+    "CV fold indices fixed and reused across new methods",
+    "Original validation AUC reproduced",
+    "Winner frozen before test access",
+    "Original model and result fingerprints unchanged"
+  ]
+}

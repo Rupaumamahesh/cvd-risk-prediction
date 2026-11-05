@@ -11,22 +11,18 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sklearn.metrics import RocCurveDisplay, ConfusionMatrixDisplay
 from pipeline_common import FEATURES, SEED, evaluate
+from plot_labels import draw_roc, label_shap_beeswarm
 
-def main():
-    model=joblib.load('models/best_model.joblib')
-    test=pd.read_csv('data/primary_test.csv')
-    train=pd.read_csv('data/primary_train.csv')
-    X,y=test[FEATURES],test.cardio
-    metrics=evaluate(model,X,y)
-    pd.DataFrame([metrics]).to_csv('outputs/test_results.csv',index=False)
-    pd.DataFrame({'actual':y,'probability':model.predict_proba(X)[:,1],'prediction':model.predict(X)}).to_csv('outputs/test_predictions.csv',index=False)
+def plot_test_predictions(y,preds,proba):
     fig,ax=plt.subplots(figsize=(7,5))
-    RocCurveDisplay.from_estimator(model,X,y,ax=ax,name='Selected model')
+    draw_roc(ax,y,proba,'Selected model')
     ax.plot([0,1],[0,1],'k--',label='Chance'); ax.legend(); ax.set_title('Primary held-out test ROC')
     fig.tight_layout(); fig.savefig('outputs/roc_curve.png',dpi=180); plt.close(fig)
     fig,ax=plt.subplots(figsize=(6,5))
-    ConfusionMatrixDisplay.from_estimator(model,X,y,ax=ax,display_labels=['No CVD','CVD'],colorbar=False)
+    ConfusionMatrixDisplay.from_predictions(y,preds,ax=ax,display_labels=['No CVD','CVD'],colorbar=False,values_format='d')
     ax.set_title('Primary test; threshold = 0.5'); fig.tight_layout(); fig.savefig('outputs/confusion_matrix.png',dpi=180); plt.close(fig)
+
+def compute_shap(model,X,train):
     # Explain transformed model inputs; imputer/scaler fit only on training data.
     transform=model[:-1]
     background=transform.transform(train[FEATURES].sample(n=100,random_state=SEED))
@@ -48,10 +44,27 @@ def main():
         explainer=shap.TreeExplainer(estimator,data=background,feature_names=FEATURES)
         values=explainer(transformed)
     if values.values.ndim==3: values=values[:,:,1]
+    return values,sample,background,estimator
+
+def plot_shap(values):
     shap.plots.beeswarm(values,max_display=len(FEATURES),show=False)
-    plt.gcf().set_size_inches(10,7); plt.tight_layout(); plt.savefig('outputs/shap_summary.png',dpi=180); plt.close()
+    label_shap_beeswarm(plt.gca(),values)
+    plt.gcf().set_size_inches(12,8); plt.tight_layout(); plt.savefig('outputs/shap_summary.png',dpi=180); plt.close()
     shap.plots.waterfall(values[0],max_display=len(FEATURES),show=False)
+    plt.xlabel('Model output and contributions (log-odds)')
     plt.tight_layout(); plt.savefig('outputs/shap_waterfall_example.png',dpi=180); plt.close()
+
+def main():
+    model=joblib.load('models/best_model.joblib')
+    test=pd.read_csv('data/primary_test.csv')
+    train=pd.read_csv('data/primary_train.csv')
+    X,y=test[FEATURES],test.cardio
+    metrics=evaluate(model,X,y)
+    pd.DataFrame([metrics]).to_csv('outputs/test_results.csv',index=False)
+    pd.DataFrame({'actual':y,'probability':model.predict_proba(X)[:,1],'prediction':model.predict(X)}).to_csv('outputs/test_predictions.csv',index=False)
+    plot_test_predictions(y,model.predict(X),model.predict_proba(X)[:,1])
+    values,sample,background,estimator=compute_shap(model,X,train)
+    plot_shap(values)
     pd.DataFrame({'feature':FEATURES,'mean_absolute_shap':np.abs(values.values).mean(axis=0)}).sort_values('mean_absolute_shap',ascending=False).to_csv('outputs/shap_importance.csv',index=False)
     with open('outputs/shap_metadata.json','w') as f:
         json.dump({'test_sample_size':len(sample),'training_background_size':0 if estimator.__class__.__name__=='XGBClassifier' else len(background), 'method':'native exact path-dependent TreeSHAP using training tree cover' if estimator.__class__.__name__=='XGBClassifier' else 'SHAP with training background','random_state':SEED,'sample_row_indices':sample.index.tolist(),'output_units':'raw margin (log odds) for XGBoost/LogisticRegression; probability for RandomForest','feature_values':'scaled units for LogisticRegression; original units for trees'},f,indent=2)

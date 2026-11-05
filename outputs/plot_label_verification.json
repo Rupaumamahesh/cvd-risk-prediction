@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "checks": [
+    "All existing metric/prediction/CV/selection files and fitted models byte-identical",
+    "Histogram counts sum to raw cohort size",
+    "SHAP contributions match saved importance values",
+    "Native interaction contributions reconstruct model margins"
+  ],
+  "unchanged_images": [
+    "architecture_drawio_preview.png (editor screenshot, not a numeric chart)"
+  ],
+  "precision": "ROC-AUC/AP/CV and metric labels: 4 decimals; box quartiles: 2 decimals; calibration coordinates: 3 decimals",
+  "notes": "Dense SHAP plots use mean absolute contribution labels, not overlapping labels on every dot. Interaction heatmap refreshed for current XGBoost instead of obsolete RF script."
+}

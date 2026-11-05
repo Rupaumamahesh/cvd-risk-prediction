@@ -1,0 +1,58 @@
+{
+  "winner": "XGBoost",
+  "rule": "highest primary validation ROC-AUC across all seven candidates",
+  "test_used_for_selection": false,
+  "original_artifacts_preserved": true,
+  "scope": "Exploratory extension; same previously inspected source data and validation set reused",
+  "grids": {
+    "LinearSVM": {
+      "model__C": [
+        0.01,
+        0.1,
+        1.0
+      ]
+    },
+    "KNN": {
+      "model__n_neighbors": [
+        15,
+        51,
+        101
+      ],
+      "model__weights": [
+        "uniform",
+        "distance"
+      ]
+    },
+    "GaussianNB": {
+      "model__var_smoothing": [
+        1e-09,
+        1e-06,
+        0.001
+      ]
+    }
+  },
+  "seed": 42,
+  "cv_folds": 5,
+  "numeric_features": [
+    "age",
+    "height",
+    "weight",
+    "ap_hi",
+    "ap_lo",
+    "bmi",
+    "pulse_pressure",
+    "map"
+  ],
+  "categorical_features": [
+    "gender",
+    "cholesterol",
+    "gluc",
+    "smoke",
+    "alco",
+    "active"
+  ],
+  "svm_output": "Decision margin, threshold zero; not probability; no log loss or Brier score",
+  "other_outputs": "Probabilities; native predict class rule (approximately threshold 0.5)",
+  "gaussian_nb_limitations": "Conditional independence violated by derived BP/BMI inputs; Gaussian approximation imperfect for one-hot binary columns",
+  "comparison_note": "Same raw/derived inputs and folds; new methods use categorical encoding, old pipelines unchanged; comparison includes algorithm-specific preprocessing"
+}
